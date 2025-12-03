@@ -1,0 +1,25 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ee:latest
+    container_name: gitlab
+    restart: always
+    hostname: 'gitlab.local'
+    networks:
+      - network-git
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.local:8081'
+        nginx['listen_port'] = 8081
+        nginx['listen_https'] = false
+        registry['enable'] = false
+    ports:
+      - '8081:8081'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+    shm_size: '256m'
+
+networks:
+  network-git:
+    external: true
